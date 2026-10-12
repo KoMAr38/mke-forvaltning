@@ -1,0 +1,97 @@
+/// Forvaltning, drift og vedlikehold av formålsbyggene (SSB tabell 12905) med areal fra tabell 11906. Kroner per m² er mot eid areal, som hos SSB.
+table fact_fdv
+	lineageTag: 08046cde-ba28-55d0-a971-97eb70d3fa73
+
+	column region_id
+		dataType: string
+		isHidden
+		lineageTag: 74a10381-d9d8-589e-a0d9-9d89e23c6bd0
+		summarizeBy: none
+		sourceColumn: region_id
+
+	column aar
+		dataType: int64
+		isHidden
+		lineageTag: 2d3b21cf-fcf8-53ef-b8b6-29214d2ca231
+		summarizeBy: none
+		sourceColumn: aar
+
+	column funksjon_kode
+		dataType: string
+		isHidden
+		lineageTag: 431a27f5-3a30-5108-889c-caaf359b404e
+		summarizeBy: none
+		sourceColumn: funksjon_kode
+
+	column energi_1000kr
+		dataType: double
+		isHidden
+		lineageTag: 7dce8715-86f8-5e39-b7ac-dd6ab6b5d544
+		summarizeBy: none
+		sourceColumn: energi_1000kr
+
+	column vedlikehold_1000kr
+		dataType: double
+		isHidden
+		lineageTag: 1981271d-1da8-54b7-8a9e-75ee72656cbd
+		summarizeBy: none
+		sourceColumn: vedlikehold_1000kr
+
+	column energi_per_kvm
+		dataType: double
+		isHidden
+		lineageTag: 3f94cf8d-fc76-56ab-96e0-3bed18d7bb45
+		summarizeBy: none
+		sourceColumn: energi_per_kvm
+
+	column renhold_per_kvm
+		dataType: double
+		isHidden
+		lineageTag: 86fdbd80-4477-5460-873d-4e2a859438c7
+		summarizeBy: none
+		sourceColumn: renhold_per_kvm
+
+	column drift_ellers_per_kvm
+		dataType: double
+		isHidden
+		lineageTag: d3f148ac-08f3-5fd9-9afe-999f13fcf827
+		summarizeBy: none
+		sourceColumn: drift_ellers_per_kvm
+
+	column vedlikehold_per_kvm
+		dataType: double
+		isHidden
+		lineageTag: 1b53ba0d-3bf5-5fd0-b862-13724fd51f4a
+		summarizeBy: none
+		sourceColumn: vedlikehold_per_kvm
+
+	column fdv_eide_bygg_per_kvm
+		dataType: double
+		isHidden
+		lineageTag: f60e8c23-b11f-5109-a0ad-09cf5db33c32
+		summarizeBy: none
+		sourceColumn: fdv_eide_bygg_per_kvm
+
+	column areal_eid
+		dataType: double
+		isHidden
+		lineageTag: b8203ec1-29ff-5764-9ec8-a5b1bb6a87a3
+		summarizeBy: none
+		sourceColumn: areal_eid
+
+	column areal_samlet
+		dataType: double
+		isHidden
+		lineageTag: d577ae0c-71c8-5054-aa0d-0279b4b6a358
+		summarizeBy: none
+		sourceColumn: areal_samlet
+
+	partition fact_fdv = m
+		mode: import
+		source =
+				let
+				    Kilde = fnLesCsv("fact_fdv.csv"),
+				    Kolonner = Table.SelectColumns(Kilde, {"region_id", "aar", "funksjon_kode", "energi_1000kr", "vedlikehold_1000kr", "energi_per_kvm", "renhold_per_kvm", "drift_ellers_per_kvm", "vedlikehold_per_kvm", "fdv_eide_bygg_per_kvm", "areal_eid", "areal_samlet"}),
+				    Typer = Table.TransformColumnTypes(Kolonner, {{"region_id", type text}, {"aar", Int64.Type}, {"funksjon_kode", type text}, {"energi_1000kr", type number}, {"vedlikehold_1000kr", type number}, {"energi_per_kvm", type number}, {"renhold_per_kvm", type number}, {"drift_ellers_per_kvm", type number}, {"vedlikehold_per_kvm", type number}, {"fdv_eide_bygg_per_kvm", type number}, {"areal_eid", type number}, {"areal_samlet", type number}}, "en-US")
+				in
+				    Typer

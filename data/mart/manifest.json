@@ -1,0 +1,30 @@
+{
+  "dim_region": {
+    "rader": 15,
+    "sha256": "50ae2e8589ec86422067890950c39abacf6ef7c61c7e8fe799715e58d8862947"
+  },
+  "dim_aar": {
+    "rader": 6,
+    "sha256": "c31474b7d4558936d7d758aca25153bd0f3b46e19b1f6c591a6a9e5e67f10feb"
+  },
+  "dim_funksjon": {
+    "rader": 9,
+    "sha256": "04034f5719bdc6301f5ad208bd17046c40b68b63c213928be9250726b10cbf45"
+  },
+  "fact_eiendom": {
+    "rader": 810,
+    "sha256": "e369bf7c221c18b269fa7e2b34b9a543d90189f26f4cbc78e39e288ea0812923"
+  },
+  "fact_art": {
+    "rader": 3010,
+    "sha256": "86ec27522572d362078466bb0676e60aeed6c7eb1f9cb9ac4cbc5c95e12c20d6"
+  },
+  "fact_fdv": {
+    "rader": 630,
+    "sha256": "48e3a6147c87947c6f2e380e9a5dee2709f0ab21c02fc5ff00ceb0690ed66599"
+  },
+  "fact_mke_aarsverk": {
+    "rader": 4,
+    "sha256": "758368bd07ecba8110c19757784ad139f7a74a80fdb2eac009519bfd840cf502"
+  }
+}

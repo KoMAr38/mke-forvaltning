@@ -1,0 +1,69 @@
+/// Kommunene i Østfold, KOSTRA-gruppe 11, Østfold fylke og landet. region_id er dagens nummer; 2020-2023-tallene under 30xx er ført over i dbt.
+table dim_region
+	lineageTag: 66621392-fcb8-5ed2-bb6d-96ce1acb0d88
+
+	column region_id
+		dataType: string
+		isHidden
+		lineageTag: eba13677-bc48-54cb-be47-ac6ef2e6f576
+		summarizeBy: none
+		sourceColumn: region_id
+
+	/// Kommune, KOSTRA-gruppe, fylke eller landet.
+	column Region
+		dataType: string
+		lineageTag: 38e11514-b161-51d1-9049-c97fd7de6278
+		summarizeBy: none
+		sourceColumn: region_navn
+		sortByColumn: Sortering
+
+	column Regiontype
+		dataType: string
+		lineageTag: e58f4575-364d-5697-bb4d-fb4606b2bfe5
+		summarizeBy: none
+		sourceColumn: region_type
+
+	/// De seks regionene rapporten sammenligner: Moss, KOSTRA-gruppe 11, Østfold, Sarpsborg, Fredrikstad og Halden.
+	column 'I utvalget'
+		dataType: boolean
+		lineageTag: a276a309-83e1-5c57-8474-b4b5fa9fddb1
+		summarizeBy: none
+		sourceColumn: i_utvalg
+
+	column Sortering
+		dataType: int64
+		isHidden
+		lineageTag: 2a8dbd8e-67d7-5225-b868-a3bc2f16692d
+		summarizeBy: none
+		sourceColumn: sortering
+
+	column Farge
+		dataType: string
+		isHidden
+		lineageTag: dbea33d5-6730-5c33-b653-a5d68725d892
+		summarizeBy: none
+		sourceColumn: farge
+
+	column 'Kart X'
+		dataType: double
+		isHidden
+		lineageTag: b1290ea2-7272-5578-ad0c-66d7a584a3b6
+		summarizeBy: none
+		sourceColumn: kart_x
+
+	column 'Kart Y'
+		dataType: double
+		isHidden
+		lineageTag: 60db45bf-736b-5266-8b3a-43147ded5d4c
+		summarizeBy: none
+		sourceColumn: kart_y
+
+	partition dim_region = m
+		mode: import
+		source =
+				let
+				    Kilde = fnLesCsv("dim_region.csv"),
+				    Kolonner = Table.SelectColumns(Kilde, {"region_id", "region_navn", "region_type", "i_utvalg", "sortering", "farge", "kart_x", "kart_y"}),
+				    Typer = Table.TransformColumnTypes(Kolonner, {{"region_id", type text}, {"region_navn", type text}, {"region_type", type text}, {"i_utvalg", type logical}, {"sortering", Int64.Type}, {"farge", type text}, {"kart_x", type number}, {"kart_y", type number}}, "en-US")
+				in
+				    Typer

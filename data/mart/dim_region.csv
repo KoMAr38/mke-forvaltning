@@ -1,0 +1,16 @@
+region_id,region_navn,region_type,i_utvalg,sortering,farge,kart_x,kart_y
+3101,Halden,kommune,true,6,"#A78BFA",5.86987,59.08657
+3103,Moss,kommune,true,1,"#2DD4BF",5.47333,59.40561
+3105,Sarpsborg,kommune,true,4,"#FB923C",5.6977,59.28805
+3107,Fredrikstad,kommune,true,5,"#38BDF8",5.58319,59.23476
+3110,Hvaler,kommune,false,7,"#64748B",5.63189,59.05747
+3112,Råde,kommune,false,8,"#64748B",5.54622,59.34628
+3114,Våler (Østfold),kommune,false,9,"#64748B",5.58161,59.45845
+3116,Skiptvet,kommune,false,10,"#64748B",5.69384,59.47977
+3118,Indre Østfold,kommune,false,11,"#64748B",5.72633,59.59652
+3120,Rakkestad,kommune,false,12,"#64748B",5.8286,59.37171
+3122,Marker,kommune,false,13,"#64748B",5.94859,59.48645
+3124,Aremark,kommune,false,14,"#64748B",5.9718,59.21469
+EAK,Landet,land,false,15,"#94A3B8",,
+EKA31,Østfold,fylke,true,3,"#7C83FF",,
+EKG11,KOSTRA-gruppe 11,kostragruppe,true,2,"#F5C26B",,

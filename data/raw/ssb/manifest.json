@@ -1,0 +1,40 @@
+{
+  "uttrekkstidspunkt": "2026-10-12T13:58:02.606426+00:00",
+  "tabeller": {
+    "12559": {
+      "fil": "hovedokonomi.csv",
+      "tittel": "12559: Hovedøkonomi for kommunal eiendomsforvaltning, etter art, funksjon, region, statistikkvariabel og år",
+      "rader": 13122,
+      "sist_oppdatert_ssb": "2026-06-15T06:00:00Z",
+      "sha256": "4668be7eedd8bdf950382856aa72f5add0b9b14c0f2da7ffc42494fcfd04931d"
+    },
+    "12367": {
+      "fil": "detaljregnskap.csv",
+      "tittel": "12367: Detaljerte regnskapstall driftsregnskapet, kommunekonsern og -kasse, etter region, regnskapsomfang, funksjon, art, statistikkvariabel og år",
+      "rader": 79380,
+      "sist_oppdatert_ssb": "2026-06-15T06:00:00Z",
+      "sha256": "6991fe0e97ba884eda7aab20ff213dfe3aa9f0f6e1b636a47854bbf14b76d559"
+    },
+    "12905": {
+      "fil": "fdv.csv",
+      "tittel": "12905: Utgifter til forvaltning, drift og vedlikehold av utvalgte kommunale formålsbygg, etter art, funksjon, region, statistikkvariabel og år",
+      "rader": 12960,
+      "sist_oppdatert_ssb": "2026-06-15T06:00:00Z",
+      "sha256": "c5850e9fd9c6f9b37d28df60fa89177ad77cc35f045b5d97fe8e521bfe81372e"
+    },
+    "11906": {
+      "fil": "areal.csv",
+      "tittel": "11906: Areal for kommunale formålsbygg, etter eieform, funksjon, region, statistikkvariabel og år",
+      "rader": 3402,
+      "sist_oppdatert_ssb": "2026-06-15T06:00:00Z",
+      "sha256": "40f6de4b66f60e9ffe03f24d3cd2ac4b99a26bfa1964e7ff201932a7b77f6217"
+    },
+    "06913": {
+      "fil": "befolkning.csv",
+      "tittel": "06913: Befolkning og endringer, etter region, statistikkvariabel og år",
+      "rader": 168,
+      "sist_oppdatert_ssb": "2026-04-15T06:00:00Z",
+      "sha256": "42e1dd700a47869f5dec0ec56529111a58d09530dc3cecae15777680c9487a63"
+    }
+  }
+}

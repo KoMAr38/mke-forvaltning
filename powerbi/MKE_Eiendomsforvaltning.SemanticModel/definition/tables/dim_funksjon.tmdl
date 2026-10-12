@@ -1,0 +1,54 @@
+/// KOSTRA-funksjonene i eiendomsforvaltningen. FGK6 og FGK6a er SSBs aggregater og er merket, så de ikke summeres sammen med delene.
+table dim_funksjon
+	lineageTag: bbf276d6-af0f-575c-8850-2d883e7449b7
+
+	column funksjon_kode
+		dataType: string
+		isHidden
+		lineageTag: 3c202515-475c-501f-a897-ba9cb93d4208
+		summarizeBy: none
+		sourceColumn: funksjon_kode
+
+	column Funksjon
+		dataType: string
+		lineageTag: c597b352-27d3-5a7d-af82-fbde944d5b12
+		summarizeBy: none
+		sourceColumn: funksjon_kort
+		sortByColumn: Sortering
+
+	column 'Funksjon fullt navn'
+		dataType: string
+		lineageTag: 7f301eb7-d9b4-5991-9811-9405a8a87ec8
+		summarizeBy: none
+		sourceColumn: funksjon_navn
+
+	/// Forvaltning (121), Formålsbygg (de seks byggfunksjonene) eller Aggregat.
+	column Funksjonsgruppe
+		dataType: string
+		lineageTag: 106d3f64-8098-5908-bde8-299a93683433
+		summarizeBy: none
+		sourceColumn: funksjon_gruppe
+
+	column 'Er aggregat'
+		dataType: boolean
+		isHidden
+		lineageTag: b669309e-de06-5a7f-ba25-bff22fe532a3
+		summarizeBy: none
+		sourceColumn: er_aggregat
+
+	column Sortering
+		dataType: int64
+		isHidden
+		lineageTag: b93ef275-393d-5779-b811-9386498abe33
+		summarizeBy: none
+		sourceColumn: sortering
+
+	partition dim_funksjon = m
+		mode: import
+		source =
+				let
+				    Kilde = fnLesCsv("dim_funksjon.csv"),
+				    Kolonner = Table.SelectColumns(Kilde, {"funksjon_kode", "funksjon_kort", "funksjon_navn", "funksjon_gruppe", "er_aggregat", "sortering"}),
+				    Typer = Table.TransformColumnTypes(Kolonner, {{"funksjon_kode", type text}, {"funksjon_kort", type text}, {"funksjon_navn", type text}, {"funksjon_gruppe", type text}, {"er_aggregat", type logical}, {"sortering", Int64.Type}}, "en-US")
+				in
+				    Typer

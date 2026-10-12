@@ -1,0 +1,36 @@
+name: mke_forvaltning
+version: "1.0.0"
+config-version: 2
+profile: mke_forvaltning
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+vars:
+  raw_mappe: "data/raw/ssb"
+
+models:
+  mke_forvaltning:
+    staging:
+      +materialized: view
+      +schema: staging
+    intermediate:
+      +materialized: view
+      +schema: intermediate
+    marts:
+      +materialized: table
+      +schema: marts
+
+seeds:
+  mke_forvaltning:
+    +schema: seeds
+    region:
+      +column_types: {region_id: varchar, kart_x: double, kart_y: double}
+    kommune_bro:
+      +column_types: {ssb_kode: varchar, region_id: varchar}
+    funksjon:
+      +column_types: {funksjon_kode: varchar}

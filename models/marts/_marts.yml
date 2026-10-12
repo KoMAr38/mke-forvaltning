@@ -1,0 +1,69 @@
+version: 2
+
+models:
+  - name: dim_region
+    columns:
+      - name: region_id
+        data_tests: [unique, not_null]
+  - name: dim_aar
+    columns:
+      - name: aar
+        data_tests: [unique, not_null]
+  - name: dim_funksjon
+    columns:
+      - name: funksjon_kode
+        data_tests: [unique, not_null]
+
+  - name: fact_eiendom
+    data_tests:
+      - unique_combination:
+          columns: [region_id, aar, funksjon_kode]
+    columns:
+      - name: region_id
+        data_tests:
+          - not_null
+          - relationships: {arguments: {to: ref('dim_region'), field: region_id}}
+      - name: aar
+        data_tests:
+          - relationships: {arguments: {to: ref('dim_aar'), field: aar}}
+      - name: funksjon_kode
+        data_tests:
+          - relationships: {arguments: {to: ref('dim_funksjon'), field: funksjon_kode}}
+      - name: kilde
+        data_tests:
+          - accepted_values: {arguments: {values: ['SSB', 'Beregnet fra de tolv kommunene']}}
+
+  - name: fact_art
+    data_tests:
+      - unique_combination:
+          columns: [region_id, aar, funksjon_kode, art_gruppe]
+    columns:
+      - name: region_id
+        data_tests:
+          - relationships: {arguments: {to: ref('dim_region'), field: region_id}}
+      - name: funksjon_kode
+        data_tests:
+          - relationships: {arguments: {to: ref('dim_funksjon'), field: funksjon_kode}}
+      - name: belop_1000kr
+        data_tests: [not_null]
+
+  - name: fact_fdv
+    data_tests:
+      - unique_combination:
+          columns: [region_id, aar, funksjon_kode]
+    columns:
+      - name: region_id
+        data_tests:
+          - relationships: {arguments: {to: ref('dim_region'), field: region_id}}
+      - name: funksjon_kode
+        data_tests:
+          - relationships: {arguments: {to: ref('dim_funksjon'), field: funksjon_kode}}
+
+  - name: fact_mke_aarsverk
+    columns:
+      - name: aar
+        data_tests:
+          - unique
+          - relationships: {arguments: {to: ref('dim_aar'), field: aar}}
+      - name: aarsverk
+        data_tests: [not_null]

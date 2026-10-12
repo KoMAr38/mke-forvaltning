@@ -1,0 +1,77 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/report/3.3.0/schema.json",
+  "themeCollection": {
+    "baseTheme": {
+      "name": "Fluent2-CY26SU10",
+      "reportVersionAtImport": {
+        "visual": "2.11.0",
+        "report": "3.4.0",
+        "page": "2.3.1"
+      },
+      "type": "SharedResources"
+    },
+    "customTheme": {
+      "name": "Nordlys-mke.json",
+      "reportVersionAtImport": {
+        "visual": "2.11.0",
+        "report": "3.4.0",
+        "page": "2.3.1"
+      },
+      "type": "RegisteredResources"
+    }
+  },
+  "resourcePackages": [
+    {
+      "name": "SharedResources",
+      "type": "SharedResources",
+      "items": [
+        {
+          "name": "Fluent2-CY26SU10",
+          "path": "BaseThemes/Fluent2-CY26SU10.json",
+          "type": "BaseTheme"
+        }
+      ]
+    },
+    {
+      "name": "RegisteredResources",
+      "type": "RegisteredResources",
+      "items": [
+        {
+          "name": "Nordlys-mke.json",
+          "path": "Nordlys-mke.json",
+          "type": "CustomTheme"
+        },
+        {
+          "name": "bg-oversikt.png",
+          "path": "bg-oversikt.png",
+          "type": "Image"
+        },
+        {
+          "name": "bg-f121.png",
+          "path": "bg-f121.png",
+          "type": "Image"
+        },
+        {
+          "name": "bg-bygg.png",
+          "path": "bg-bygg.png",
+          "type": "Image"
+        },
+        {
+          "name": "bg-metode.png",
+          "path": "bg-metode.png",
+          "type": "Image"
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "locale": "nb-NO",
+    "defaultDisplayUnitsToNone": true,
+    "useStylableVisualContainerHeader": true,
+    "exportDataMode": "AllowSummarized",
+    "defaultDrillFilterOtherVisuals": true,
+    "allowChangeFilterTypes": true,
+    "useEnhancedTooltips": true,
+    "useDefaultAggregateDisplayName": true
+  }
+}

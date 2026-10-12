@@ -1,0 +1,7 @@
+mke_forvaltning:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: data/mke_forvaltning.duckdb
+      threads: 1

@@ -1,0 +1,63 @@
+/// Korrigerte brutto driftsutgifter brutt ned på art, kommunekonsern (SSB tabell 12367). Gruppene summerer til AGD4 i tabell 12559.
+table fact_art
+	lineageTag: 788d33a8-ec78-5d67-846b-6dc49c3dc351
+
+	column region_id
+		dataType: string
+		isHidden
+		lineageTag: 108c75ec-25c3-5ced-87e7-29403fff9b4e
+		summarizeBy: none
+		sourceColumn: region_id
+
+	column aar
+		dataType: int64
+		isHidden
+		lineageTag: 9c7a313c-c636-5110-a882-4888b058bb62
+		summarizeBy: none
+		sourceColumn: aar
+
+	column funksjon_kode
+		dataType: string
+		isHidden
+		lineageTag: 0ddca680-f46b-5e7e-9bc6-b5361431630f
+		summarizeBy: none
+		sourceColumn: funksjon_kode
+
+	/// Lønn, pensjon, arbeidsgiveravgift, kjøp av varer og tjenester, eller resten: overføringer, kjøp som erstatter egenproduksjon, merverdiavgift, internt fordelte utgifter m.m.
+	column Art
+		dataType: string
+		lineageTag: 6face563-fa98-52f7-b392-2845529834d2
+		summarizeBy: none
+		sourceColumn: art_gruppe
+		sortByColumn: 'Art sortering'
+
+	/// Sann for lønn, pensjon og arbeidsgiveravgift.
+	column Personal
+		dataType: boolean
+		lineageTag: dea426fd-d395-5cbf-9323-38fe3ff882d7
+		summarizeBy: none
+		sourceColumn: er_personal
+
+	column 'Art sortering'
+		dataType: int64
+		isHidden
+		lineageTag: 451200e2-720d-5acb-b496-b81f0b941d4c
+		summarizeBy: none
+		sourceColumn: sortering
+
+	column belop_1000kr
+		dataType: double
+		isHidden
+		lineageTag: c3ff689f-8908-5c16-bae6-8c64d67a1c24
+		summarizeBy: none
+		sourceColumn: belop_1000kr
+
+	partition fact_art = m
+		mode: import
+		source =
+				let
+				    Kilde = fnLesCsv("fact_art.csv"),
+				    Kolonner = Table.SelectColumns(Kilde, {"region_id", "aar", "funksjon_kode", "art_gruppe", "er_personal", "sortering", "belop_1000kr"}),
+				    Typer = Table.TransformColumnTypes(Kolonner, {{"region_id", type text}, {"aar", Int64.Type}, {"funksjon_kode", type text}, {"art_gruppe", type text}, {"er_personal", type logical}, {"sortering", Int64.Type}, {"belop_1000kr", type number}}, "en-US")
+				in
+				    Typer

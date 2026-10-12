@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "MKE_Eiendomsforvaltning"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "3f0c2a8e-7b1d-5c4e-9a6f-9b93a196ac81"
+  }
+}

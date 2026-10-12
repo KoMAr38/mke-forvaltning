@@ -1,0 +1,521 @@
+/// Alle mål, ordnet i visningsmapper. Ingen data.
+table _Mål
+	lineageTag: 64819015-36da-5997-a83d-a4f7e905ce14
+
+	/// Netto driftsutgifter til eiendomsforvaltning (FGK6a) per innbygger, kroner. SSBs tall for én region og ett år; tomt ellers, fordi tall per innbygger ikke kan summeres.
+	measure 'Eiendomsforvaltning per innbygger' =
+			IF (
+			    HASONEVALUE ( dim_region[region_id] ) && HASONEVALUE ( dim_aar[År] ),
+			    CALCULATE ( SUM ( fact_eiendom[netto_per_innbygger] ), dim_funksjon[funksjon_kode] = "FGK6a" )
+			)
+		formatString: #,0
+		displayFolder: Per innbygger
+		lineageTag: 9f92fe01-e1d7-57d6-8e7e-321e76028d8c
+
+	/// Netto driftsutgifter på funksjon 121 Forvaltningsutgifter i eiendomsforvaltningen per innbygger, kroner. Tallet bak +105 prosent i kommunedirektørens analyse.
+	measure 'Forvaltning 121 per innbygger' =
+			IF (
+			    HASONEVALUE ( dim_region[region_id] ) && HASONEVALUE ( dim_aar[År] ),
+			    CALCULATE ( SUM ( fact_eiendom[netto_per_innbygger] ), dim_funksjon[funksjon_kode] = "121" )
+			)
+		formatString: #,0
+		displayFolder: Per innbygger
+		lineageTag: 44dfc911-de9c-55c2-8f7f-da35b9523eac
+
+	/// Eiendomsforvaltning minus funksjon 121, per innbygger. SSB publiserer ikke FGK6 per innbygger; differansen er det samme som summen av de seks byggfunksjonene.
+	measure 'Formålsbygg per innbygger' = [Eiendomsforvaltning per innbygger] - [Forvaltning 121 per innbygger]
+		formatString: #,0
+		displayFolder: Per innbygger
+		lineageTag: 5c058dd3-9a8e-5e4f-8d2c-6a34176663c1
+
+	/// Korrigerte brutto driftsutgifter på formålsbyggene per m² samlet areal (eid + leid), som hos SSB.
+	measure 'Formålsbygg kr per m²' =
+			IF (
+			    HASONEVALUE ( dim_region[region_id] ) && HASONEVALUE ( dim_aar[År] ),
+			    CALCULATE ( SUM ( fact_eiendom[korr_brutto_per_kvm] ), dim_funksjon[funksjon_kode] = "FGK6" )
+			)
+		formatString: #,0
+		displayFolder: Per m²
+		lineageTag: 1888189f-e45c-53e1-ac11-00a72fe372ba
+
+	/// Funksjon 121 per m² formålsbygg. SSB fordeler forvaltningen på hele byggmassen.
+	measure 'Forvaltning 121 kr per m²' =
+			IF (
+			    HASONEVALUE ( dim_region[region_id] ) && HASONEVALUE ( dim_aar[År] ),
+			    CALCULATE ( SUM ( fact_eiendom[korr_brutto_per_kvm] ), dim_funksjon[funksjon_kode] = "121" )
+			)
+		formatString: #,0
+		displayFolder: Per m²
+		lineageTag: fe23a83c-1428-530f-91a9-178225049cec
+
+	/// Energiutgifter per m² eid areal, formålsbyggene samlet (SSB tabell 12905).
+	measure 'Energi kr per m²' =
+			IF (
+			    HASONEVALUE ( dim_region[region_id] ) && HASONEVALUE ( dim_aar[År] ),
+			    CALCULATE ( SUM ( fact_fdv[energi_per_kvm] ), dim_funksjon[funksjon_kode] = "FGK6" )
+			)
+		formatString: #,0
+		displayFolder: Per m²
+		lineageTag: d157e4cb-0feb-5e97-b8a0-97f6270bce42
+
+	/// Renhold per m² eid areal.
+	measure 'Renhold kr per m²' =
+			IF (
+			    HASONEVALUE ( dim_region[region_id] ) && HASONEVALUE ( dim_aar[År] ),
+			    CALCULATE ( SUM ( fact_fdv[renhold_per_kvm] ), dim_funksjon[funksjon_kode] = "FGK6" )
+			)
+		formatString: #,0
+		displayFolder: Per m²
+		lineageTag: a59a4aaf-1775-54c6-9e00-86da02cda846
+
+	/// Driftsaktiviteter minus energi og renhold, per m² eid areal: vakthold, vaktmester, forsikring, kommunale avgifter m.m.
+	measure 'Drift ellers kr per m²' =
+			IF (
+			    HASONEVALUE ( dim_region[region_id] ) && HASONEVALUE ( dim_aar[År] ),
+			    CALCULATE ( SUM ( fact_fdv[drift_ellers_per_kvm] ), dim_funksjon[funksjon_kode] = "FGK6" )
+			)
+		formatString: #,0
+		displayFolder: Per m²
+		lineageTag: 7d1700ff-92a8-5c83-92bd-51ee7d629a50
+
+	/// Vedlikeholdsaktiviteter per m² eid areal.
+	measure 'Vedlikehold kr per m²' =
+			IF (
+			    HASONEVALUE ( dim_region[region_id] ) && HASONEVALUE ( dim_aar[År] ),
+			    CALCULATE ( SUM ( fact_fdv[vedlikehold_per_kvm] ), dim_funksjon[funksjon_kode] = "FGK6" )
+			)
+		formatString: #,0
+		displayFolder: Per m²
+		lineageTag: bf57ba2b-df63-50c7-bf18-432072bb6873
+
+	/// Drift og vedlikehold per m² eid areal: energi, renhold, drift ellers og vedlikehold.
+	measure 'FDV kr per m²' = [Energi kr per m²] + [Renhold kr per m²] + [Drift ellers kr per m²] + [Vedlikehold kr per m²]
+		formatString: #,0
+		displayFolder: Per m²
+		lineageTag: 87a5b9db-b624-5706-a971-da54d290334a
+
+	/// Korrigerte brutto driftsutgifter i millioner kroner, summert over de sju funksjonene. Aggregatene FGK6 og FGK6a er holdt utenfor, så ingenting telles to ganger.
+	measure 'Korrigerte brutto (mill.)' = DIVIDE ( CALCULATE ( SUM ( fact_eiendom[korr_brutto_1000kr] ), KEEPFILTERS ( dim_funksjon[Er aggregat] = FALSE () ) ), 1000 )
+		formatString: #,0.0
+		displayFolder: Kroner
+		lineageTag: 6e68b730-89f9-5f7f-862b-bbf5004d7864
+
+	/// Korrigerte brutto driftsutgifter på funksjon 121, millioner kroner.
+	measure 'Forvaltning 121 (mill.)' = CALCULATE ( [Korrigerte brutto (mill.)], dim_funksjon[funksjon_kode] = "121" )
+		formatString: #,0.0
+		displayFolder: Kroner
+		lineageTag: bc7963da-52b1-568c-9f7b-8119b35eff60
+
+	/// Korrigerte brutto driftsutgifter på de seks byggfunksjonene, millioner kroner.
+	measure 'Formålsbygg (mill.)' = CALCULATE ( [Korrigerte brutto (mill.)], dim_funksjon[Funksjonsgruppe] = "Formålsbygg" )
+		formatString: #,0.0
+		displayFolder: Kroner
+		lineageTag: 1278f7aa-961c-534a-8592-a8e71a2ea251
+
+	/// 121 og formålsbyggene samlet, millioner kroner. Lik SSBs FGK6a (testet i dbt).
+	measure 'Eiendomsforvaltning (mill.)' = CALCULATE ( [Korrigerte brutto (mill.)], REMOVEFILTERS ( dim_funksjon ) )
+		formatString: #,0.0
+		displayFolder: Kroner
+		lineageTag: f37fbdd2-8a4b-50d4-9f20-d42c149e3958
+
+	/// Korrigerte brutto i valgt år minus året før, millioner kroner. Med funksjon på aksen: hvor endringen ligger.
+	measure 'Endring mot året før (mill.)' =
+			VAR _Aar = SELECTEDVALUE ( dim_aar[År] )
+			RETURN
+			    IF ( NOT ISBLANK ( _Aar ), [Korrigerte brutto (mill.)] - CALCULATE ( [Korrigerte brutto (mill.)], dim_aar[År] = _Aar - 1 ) )
+		formatString: "+#,0.0;-#,0.0;0.0"
+		displayFolder: Kroner
+		lineageTag: 02877f0e-24ae-53c9-a1ea-88dade337f2d
+
+	/// Korrigerte brutto driftsutgifter per art, millioner kroner, kommunekonsern.
+	measure 'Beløp art (mill.)' = DIVIDE ( SUM ( fact_art[belop_1000kr] ), 1000 )
+		formatString: #,0.0
+		displayFolder: Art
+		lineageTag: f3b5de04-0e40-5019-add2-21478bce4cd8
+
+	/// Beløp per art i valgt år minus året før, millioner kroner. Summen over artene er lik Endring mot året før.
+	measure 'Endring art (mill.)' =
+			VAR _Aar = SELECTEDVALUE ( dim_aar[År] )
+			RETURN
+			    IF ( NOT ISBLANK ( _Aar ), [Beløp art (mill.)] - CALCULATE ( [Beløp art (mill.)], dim_aar[År] = _Aar - 1 ) )
+		formatString: "+#,0.0;-#,0.0;0.0"
+		displayFolder: Art
+		lineageTag: 7e3bb81f-59bd-5dbe-9c72-2734b90d3757
+
+	/// Lønn, pensjon og arbeidsgiveravgift, millioner kroner.
+	measure 'Personalkostnader (mill.)' = CALCULATE ( [Beløp art (mill.)], fact_art[Personal] = TRUE () )
+		formatString: #,0.0
+		displayFolder: Art
+		lineageTag: 8a93c2ff-81e8-54ee-8835-fb1f2f72823a
+
+	/// Personalkostnader i valgt år minus året før, millioner kroner.
+	measure 'Endring personal (mill.)' = CALCULATE ( [Endring art (mill.)], fact_art[Personal] = TRUE () )
+		formatString: "+#,0.0;-#,0.0;0.0"
+		displayFolder: Art
+		lineageTag: c6b1655d-3e95-57f3-bc90-c9e72c215fa5
+
+	measure 'Moss eiendomsforvaltning per innbygger' = CALCULATE ( [Eiendomsforvaltning per innbygger], dim_region[region_id] = "3103" )
+		formatString: "#,0"" kr"""
+		displayFolder: Kort
+		lineageTag: dec8eeb5-559b-5d6b-a661-83e4a87bef84
+
+	measure 'KG11 eiendomsforvaltning per innbygger' = CALCULATE ( [Eiendomsforvaltning per innbygger], dim_region[region_id] = "EKG11" )
+		formatString: #,0
+		displayFolder: Kort
+		lineageTag: f9a0aa1b-60e2-5833-8108-542b175f2214
+
+	measure 'Østfold eiendomsforvaltning per innbygger' = CALCULATE ( [Eiendomsforvaltning per innbygger], dim_region[region_id] = "EKA31" )
+		formatString: "#,0"" kr"""
+		displayFolder: Kort
+		lineageTag: ebf30a07-4aa8-5d72-897d-d2ea63da40e6
+
+	measure 'Moss 121 per innbygger' = CALCULATE ( [Forvaltning 121 per innbygger], dim_region[region_id] = "3103" )
+		formatString: "#,0"" kr"""
+		displayFolder: Kort
+		lineageTag: 87cb5e7f-e75a-57bb-83e0-88d7bfbe1a15
+
+	measure 'KG11 121 per innbygger' = CALCULATE ( [Forvaltning 121 per innbygger], dim_region[region_id] = "EKG11" )
+		formatString: #,0
+		displayFolder: Kort
+		lineageTag: 924a50dc-56c6-544a-b838-f4071b601659
+
+	measure 'Moss formålsbygg kr per m²' = CALCULATE ( [Formålsbygg kr per m²], dim_region[region_id] = "3103" )
+		formatString: "#,0"" kr"""
+		displayFolder: Kort
+		lineageTag: fd41a1c3-4e0c-51d8-a26d-1e23f25fa416
+
+	measure 'KG11 formålsbygg kr per m²' = CALCULATE ( [Formålsbygg kr per m²], dim_region[region_id] = "EKG11" )
+		formatString: #,0
+		displayFolder: Kort
+		lineageTag: 56d6f8cd-6f08-50b1-b747-75b2fb507fa5
+
+	measure 'Moss energi kr per m²' = CALCULATE ( [Energi kr per m²], dim_region[region_id] = "3103" )
+		formatString: "#,0"" kr"""
+		displayFolder: Kort
+		lineageTag: af77ae49-2418-5202-bc76-26c4b1881f56
+
+	measure 'KG11 energi kr per m²' = CALCULATE ( [Energi kr per m²], dim_region[region_id] = "EKG11" )
+		formatString: #,0
+		displayFolder: Kort
+		lineageTag: f4c4a342-5751-5129-bd2a-a0a35e89516c
+
+	measure 'Moss FDV kr per m²' = CALCULATE ( [FDV kr per m²], dim_region[region_id] = "3103" )
+		formatString: "#,0"" kr"""
+		displayFolder: Kort
+		lineageTag: 6e7fbd18-36e4-52e7-9d66-e032618bb40f
+
+	measure 'KG11 FDV kr per m²' = CALCULATE ( [FDV kr per m²], dim_region[region_id] = "EKG11" )
+		formatString: #,0
+		displayFolder: Kort
+		lineageTag: c1fdce51-a0ca-55c1-a346-b8acec20b1cf
+
+	/// Endring i funksjon 121 for Moss fra året før.
+	measure 'Moss 121 endring (mill.)' = CALCULATE ( [Endring mot året før (mill.)], dim_region[region_id] = "3103", dim_funksjon[funksjon_kode] = "121" )
+		formatString: """+""#,0.0"" mill. kr"";""−""#,0.0"" mill. kr"";""0"""
+		displayFolder: Kort
+		lineageTag: af86846e-c92b-52a4-8560-0c2f90562948
+
+	/// Endring i de seks byggfunksjonene for Moss fra året før.
+	measure 'Moss formålsbygg endring (mill.)' = CALCULATE ( [Endring mot året før (mill.)], dim_region[region_id] = "3103", dim_funksjon[Funksjonsgruppe] = "Formålsbygg" )
+		formatString: """+""#,0.0"" mill. kr"";""−""#,0.0"" mill. kr"";""0"""
+		displayFolder: Kort
+		lineageTag: 0e07acd3-05cb-5ba0-8362-5cebf3380e6d
+
+	/// Endring i eiendomsforvaltningen samlet for Moss fra året før.
+	measure 'Moss eiendomsforvaltning endring (mill.)' = CALCULATE ( [Endring mot året før (mill.)], dim_region[region_id] = "3103", REMOVEFILTERS ( dim_funksjon ) )
+		formatString: """+""#,0.0"" mill. kr"";""−""#,0.0"" mill. kr"";""0"""
+		displayFolder: Kort
+		lineageTag: cb8c3fb2-a3f9-52c9-9aee-5f36d44838e2
+
+	measure 'Moss eiendomsforvaltning endring %' =
+			VAR _Aar = SELECTEDVALUE ( dim_aar[År] )
+			VAR _Naa = CALCULATE ( [Eiendomsforvaltning (mill.)], dim_region[region_id] = "3103" )
+			VAR _Foer = CALCULATE ( [Eiendomsforvaltning (mill.)], dim_region[region_id] = "3103", dim_aar[År] = _Aar - 1 )
+			RETURN
+			    DIVIDE ( _Naa - _Foer, _Foer )
+		formatString: """▲ ""0.0%"" mot året før"";""▼ ""0.0%"" mot året før"";""uendret"""
+		displayFolder: Kort
+		lineageTag: be460acd-a781-53af-9e6b-f253f1dd0a63
+
+	/// Lønn, pensjon og arbeidsgiveravgift på 121 for Moss, endring fra året før.
+	measure 'Moss 121 personal endring (mill.)' = CALCULATE ( [Endring personal (mill.)], dim_region[region_id] = "3103", dim_funksjon[funksjon_kode] = "121" )
+		formatString: """+""#,0.0"" mill. kr"";""−""#,0.0"" mill. kr"";""0"""
+		displayFolder: Kort
+		lineageTag: 3981fed4-996f-5ed4-8e09-0ff05c5af7e1
+
+	/// Lønn, pensjon og arbeidsgiveravgift på de seks byggfunksjonene for Moss, endring fra året før.
+	measure 'Moss formålsbygg personal endring (mill.)' = CALCULATE ( [Endring personal (mill.)], dim_region[region_id] = "3103", dim_funksjon[Funksjonsgruppe] = "Formålsbygg" )
+		formatString: """+""#,0.0"" mill. kr"";""−""#,0.0"" mill. kr"";""0"""
+		displayFolder: Kort
+		lineageTag: 8fa46a15-5259-59ad-b0ff-6d763b3770bd
+
+	/// Moss mot gruppen, relativt.
+	measure 'Avvik eiendomsforvaltning mot KG11' = DIVIDE ( [Moss eiendomsforvaltning per innbygger] - [KG11 eiendomsforvaltning per innbygger], [KG11 eiendomsforvaltning per innbygger] )
+		formatString: """▲ ""0%"" over KOSTRA-gruppe 11"";""▼ ""0%"" under KOSTRA-gruppe 11"";""lik KOSTRA-gruppe 11"""
+		displayFolder: Kort
+		lineageTag: 99ad3673-f2bc-5b75-8f55-c4ac14e8079e
+
+	/// Moss mot gruppen på funksjon 121. +106 prosent i 2025 med SSBs tall med én desimal; 693 mot 336 avrundet gir 106 prosent.
+	measure 'Avvik 121 mot KG11' = DIVIDE ( [Moss 121 per innbygger] - [KG11 121 per innbygger], [KG11 121 per innbygger] )
+		formatString: """▲ ""0%"" over KOSTRA-gruppe 11"";""▼ ""0%"" under KOSTRA-gruppe 11"";""lik KOSTRA-gruppe 11"""
+		displayFolder: Kort
+		lineageTag: f5e0ff14-fdeb-51da-8a1c-25eccbc50d53
+
+	measure 'Østfold avvik mot Moss' = DIVIDE ( [Moss eiendomsforvaltning per innbygger] - [Østfold eiendomsforvaltning per innbygger], [Østfold eiendomsforvaltning per innbygger] )
+		formatString: """Moss ▲ ""0.0%"" over fylket"";""Moss ▼ ""0.0%"" under fylket"";""Moss lik fylket"""
+		displayFolder: Kort
+		lineageTag: f68a6a31-0b04-593b-b220-6c5ae23fc183
+
+	measure 'Moss vedlikehold kr per m²' = CALCULATE ( [Vedlikehold kr per m²], dim_region[region_id] = "3103" )
+		formatString: "#,0"" kr"""
+		displayFolder: Kort
+		lineageTag: 4c5ef8fd-d973-5257-8244-775c1d7a0116
+
+	measure 'KG11 vedlikehold kr per m²' = CALCULATE ( [Vedlikehold kr per m²], dim_region[region_id] = "EKG11" )
+		formatString: #,0
+		displayFolder: Kort
+		lineageTag: a5bc17ec-2817-504f-9dc7-1d95044f3974
+
+	/// Innbyggere 31.12 i regnskapsåret (SSB tabell 06913), samme tall som KOSTRA deler på. Bare kommunene og Østfold.
+	measure Innbyggere =
+			IF (
+			    HASONEVALUE ( dim_region[region_id] ) && HASONEVALUE ( dim_aar[År] ),
+			    CALCULATE ( SUM ( fact_eiendom[innbyggere] ), dim_funksjon[funksjon_kode] = "FGK6a" )
+			)
+		formatString: #,0
+		displayFolder: Per innbygger
+		lineageTag: 0fa324ae-f0ac-53d7-9a60-1cb9f6624509
+
+	/// Moss minus KOSTRA-gruppe 11 på funksjon 121, kroner per innbygger.
+	measure 'Avvik 121 per innbygger mot KG11' = [Moss 121 per innbygger] - [KG11 121 per innbygger]
+		formatString: #,0
+		displayFolder: Kort
+		lineageTag: 2c9d8f0e-68b4-56e5-a693-37d6f424709b
+
+	/// Hva avviket på 121 betyr i kroner: avvik per innbygger ganger innbyggerne i Moss. Drifts- og investeringsanalysen 2027-2030 regnet om lag 20 millioner på foreløpige 2025-tall.
+	measure 'Avvik 121 i kroner (mill.)' = DIVIDE ( [Avvik 121 per innbygger mot KG11] * CALCULATE ( [Innbyggere], dim_region[region_id] = "3103" ), 1000000 )
+		formatString: "#,0.0"" mill. kr"""
+		displayFolder: Kort
+		lineageTag: 67c02794-53f4-5216-bc30-7a5a0da5d560
+
+	/// Lønn, pensjon og arbeidsgiveravgift på funksjon 121, Moss, millioner kroner.
+	measure 'Moss 121 personal (mill.)' = CALCULATE ( [Personalkostnader (mill.)], dim_region[region_id] = "3103", dim_funksjon[funksjon_kode] = "121" )
+		formatString: #,0.0
+		displayFolder: Art
+		lineageTag: e2f3393b-7fde-5624-8abc-6ba1ddffb79b
+
+	/// Lønn, pensjon og arbeidsgiveravgift på de seks byggfunksjonene, Moss, millioner kroner.
+	measure 'Moss formålsbygg personal (mill.)' = CALCULATE ( [Personalkostnader (mill.)], dim_region[region_id] = "3103", dim_funksjon[Funksjonsgruppe] = "Formålsbygg" )
+		formatString: #,0.0
+		displayFolder: Art
+		lineageTag: 35bd2348-2d60-5799-b859-08b9639b9e29
+
+	/// Årsverk i MKEiendom per 31.12 (Moss kommunes årsrapporter).
+	measure 'Årsverk MKEiendom' = SUM ( fact_mke_aarsverk[aarsverk] )
+		formatString: #,0
+		displayFolder: Art
+		lineageTag: a07e5cf3-12e9-51d7-ac27-b72eb8a049b1
+
+	measure 'Tekst eiendom mot KG11' =
+			VAR _A = [Avvik eiendomsforvaltning mot KG11]
+			RETURN
+			    IF (
+			        NOT ISBLANK ( _A ),
+			        IF ( _A < 0, "▼ ", "▲ " ) & FORMAT ( ABS ( _A ), "0 %" )
+			            & IF ( _A < 0, " under", " over" ) & " KOSTRA-gruppe 11 ("
+			            & FORMAT ( [KG11 eiendomsforvaltning per innbygger], "#,0" ) & " kr)"
+			    )
+		isHidden
+		displayFolder: Tekst
+		lineageTag: 61213138-1178-514d-8c57-2f3caa64ba22
+
+	measure 'Tekst eiendom mot Østfold' =
+			VAR _A = [Østfold avvik mot Moss]
+			RETURN
+			    IF (
+			        NOT ISBLANK ( _A ),
+			        "Moss " & IF ( _A < 0, "▼ ", "▲ " ) & FORMAT ( ABS ( _A ), "0.0 %" )
+			            & IF ( _A < 0, " under", " over" ) & " fylket"
+			    )
+		isHidden
+		displayFolder: Tekst
+		lineageTag: 52069e09-cda1-5be0-afa8-0cfe90d1b878
+
+	measure 'Tekst 121 mot KG11' =
+			VAR _A = [Avvik 121 mot KG11]
+			RETURN
+			    IF (
+			        NOT ISBLANK ( _A ),
+			        IF ( _A < 0, "▼ ", "▲ " ) & FORMAT ( ABS ( _A ), "0 %" )
+			            & IF ( _A < 0, " under", " over" ) & " KOSTRA-gruppe 11 ("
+			            & FORMAT ( [KG11 121 per innbygger], "#,0" ) & " kr)"
+			    )
+		isHidden
+		displayFolder: Tekst
+		lineageTag: 0ecdb550-f206-5712-a2cf-a347db8822fd
+
+	measure 'Tekst 121 to år' =
+			VAR _Aar = SELECTEDVALUE ( dim_aar[År] )
+			VAR _Naa = [Avvik 121 mot KG11]
+			VAR _Foer = CALCULATE ( [Avvik 121 mot KG11], dim_aar[År] = _Aar - 1 )
+			RETURN
+			    IF (
+			        NOT ISBLANK ( _Naa ),
+			        "▲ " & FORMAT ( _Naa, "0 %" ) & " over gruppen"
+			            & IF ( NOT ISBLANK ( _Foer ), ", " & ( _Aar - 1 ) & ": ▲ " & FORMAT ( _Foer, "0 %" ) )
+			    )
+		isHidden
+		displayFolder: Tekst
+		lineageTag: 6f43dd3b-f663-5cf1-8c63-0885138bac83
+
+	measure 'Tekst avvik i kroner' =
+			VAR _Per = [Avvik 121 per innbygger mot KG11]
+			VAR _Innb = CALCULATE ( [Innbyggere], dim_region[region_id] = "3103" )
+			RETURN
+			    IF ( NOT ISBLANK ( _Per ), FORMAT ( _Per, "#,0" ) & " kr per innbygger × " & FORMAT ( _Innb, "#,0" ) & " innbyggere" )
+		isHidden
+		displayFolder: Tekst
+		lineageTag: 695f88ef-fca3-52ef-af79-1477706f7e90
+
+	measure 'Tekst personal 121' =
+			VAR _P = [Moss 121 personal endring (mill.)]
+			RETURN
+			    IF ( NOT ISBLANK ( _P ), "Herav personalkostnader: " & IF ( _P >= 0, "+", "−" ) & FORMAT ( ABS ( _P ), "#,0.0" ) & " mill." )
+		isHidden
+		displayFolder: Tekst
+		lineageTag: bb8a417f-2798-5dc2-9612-3e9c7c9d7860
+
+	measure 'Tekst personal formålsbygg' =
+			VAR _P = [Moss formålsbygg personal endring (mill.)]
+			RETURN
+			    IF ( NOT ISBLANK ( _P ), "Herav personalkostnader: " & IF ( _P >= 0, "+", "−" ) & FORMAT ( ABS ( _P ), "#,0.0" ) & " mill." )
+		isHidden
+		displayFolder: Tekst
+		lineageTag: ad7638e7-0e4c-5849-868b-4021d2a24d21
+
+	measure 'Tekst eiendom endring' =
+			VAR _Aar = SELECTEDVALUE ( dim_aar[År] )
+			VAR _E = [Moss eiendomsforvaltning endring %]
+			RETURN
+			    IF ( NOT ISBLANK ( _E ), IF ( _E < 0, "▼ ", "▲ " ) & FORMAT ( ABS ( _E ), "0.0 %" ) & " mot " & ( _Aar - 1 ) )
+		isHidden
+		displayFolder: Tekst
+		lineageTag: 42a95bb4-659d-5988-95bd-ed7ecb8e8e1f
+
+	measure 'Tekst formålsbygg mot KG11' =
+			VAR _M = [Moss formålsbygg kr per m²]
+			VAR _K = [KG11 formålsbygg kr per m²]
+			VAR _A = DIVIDE ( _M - _K, _K )
+			RETURN
+			    IF (
+			        NOT ISBLANK ( _M ) && NOT ISBLANK ( _K ),
+			        IF ( _A < 0, "▼ ", "▲ " ) & FORMAT ( ABS ( _A ), "0.0 %" )
+			            & IF ( _A < 0, " under", " over" ) & " KOSTRA-gruppe 11 (" & FORMAT ( _K, "#,0" ) & " kr)"
+			    )
+		isHidden
+		displayFolder: Tekst
+		lineageTag: 611381d1-0812-5f8c-859d-1ce1fae35218
+
+	measure 'Tekst FDV mot KG11' =
+			VAR _M = [Moss FDV kr per m²]
+			VAR _K = [KG11 FDV kr per m²]
+			VAR _A = DIVIDE ( _M - _K, _K )
+			RETURN
+			    IF (
+			        NOT ISBLANK ( _M ) && NOT ISBLANK ( _K ),
+			        IF ( _A < 0, "▼ ", "▲ " ) & FORMAT ( ABS ( _A ), "0.0 %" )
+			            & IF ( _A < 0, " under", " over" ) & " KOSTRA-gruppe 11 (" & FORMAT ( _K, "#,0" ) & " kr)"
+			    )
+		isHidden
+		displayFolder: Tekst
+		lineageTag: 71de95c3-3077-525c-90a1-82354fbc4507
+
+	measure 'Tekst energi mot KG11' =
+			VAR _M = [Moss energi kr per m²]
+			VAR _K = [KG11 energi kr per m²]
+			VAR _A = DIVIDE ( _M - _K, _K )
+			RETURN
+			    IF (
+			        NOT ISBLANK ( _M ) && NOT ISBLANK ( _K ),
+			        IF ( _A < 0, "▼ ", "▲ " ) & FORMAT ( ABS ( _A ), "0.0 %" )
+			            & IF ( _A < 0, " under", " over" ) & " KOSTRA-gruppe 11 (" & FORMAT ( _K, "#,0" ) & " kr)"
+			    )
+		isHidden
+		displayFolder: Tekst
+		lineageTag: 7e9accde-bfc0-53b6-818a-ff7f50c034e3
+
+	measure 'Tekst vedlikehold mot KG11' =
+			VAR _M = [Moss vedlikehold kr per m²]
+			VAR _K = [KG11 vedlikehold kr per m²]
+			VAR _A = DIVIDE ( _M - _K, _K )
+			RETURN
+			    IF (
+			        NOT ISBLANK ( _M ) && NOT ISBLANK ( _K ),
+			        IF ( _A < 0, "▼ ", "▲ " ) & FORMAT ( ABS ( _A ), "0 %" )
+			            & IF ( _A < 0, " under", " over" ) & " KOSTRA-gruppe 11 (" & FORMAT ( _K, "#,0" ) & " kr)"
+			    )
+		isHidden
+		displayFolder: Tekst
+		lineageTag: 2f849afb-68c7-5f9f-8843-1ba428f86cd6
+
+	/// Tyngdepunktet til kommunens største sammenhengende flate, lengdegrad × cos(59,3°).
+	measure 'Kart X' = IF ( HASONEVALUE ( dim_region[region_id] ), MAX ( dim_region[Kart X] ) )
+		formatString: 0.000
+		isHidden
+		displayFolder: Kart
+		lineageTag: 181aca8e-fb9a-51bd-b6ba-242d03842a55
+
+	/// Tyngdepunktet til kommunens største sammenhengende flate, breddegrad.
+	measure 'Kart Y' = IF ( HASONEVALUE ( dim_region[region_id] ), MAX ( dim_region[Kart Y] ) )
+		formatString: 0.000
+		isHidden
+		displayFolder: Kart
+		lineageTag: b53f03de-f910-5033-88f3-1a9284765041
+
+	/// Turkis for Moss, rosa for kommuner som bruker mer per innbygger enn Moss, indigo for de som bruker mindre.
+	measure 'Farge kart' =
+			VAR _V = [Eiendomsforvaltning per innbygger]
+			VAR _Moss = CALCULATE ( [Eiendomsforvaltning per innbygger], REMOVEFILTERS ( dim_region ), dim_region[region_id] = "3103" )
+			RETURN
+			    SWITCH (
+			        TRUE (),
+			        SELECTEDVALUE ( dim_region[region_id] ) = "3103", "#2DD4BF",
+			        _V > _Moss, "#FF6B8B",
+			        "#7C83FF"
+			    )
+		isHidden
+		displayFolder: Visning
+		lineageTag: 35eaaab4-1675-5c70-b565-cb8247907cd8
+
+	measure 'Data til og med' = "KOSTRA " & CALCULATE ( MAX ( fact_eiendom[aar] ), REMOVEFILTERS () )
+		isHidden
+		displayFolder: Tekst
+		lineageTag: 50186a31-d414-5746-8593-d2a9fa1f921e
+
+	/// Sju funksjoner minus SSBs FGK6a, tusen kroner. Skal være 0.
+	measure 'Kontroll aggregat mot deler' =
+			VAR _Deler = CALCULATE ( SUM ( fact_eiendom[korr_brutto_1000kr] ), dim_funksjon[Er aggregat] = FALSE () )
+			VAR _Fgk6a = CALCULATE ( SUM ( fact_eiendom[korr_brutto_1000kr] ), dim_funksjon[funksjon_kode] = "FGK6a" )
+			RETURN
+			    _Deler - _Fgk6a
+		formatString: #,0
+		displayFolder: Kontroll
+		lineageTag: e08c5932-cac0-5b0c-8e05-39e185951033
+
+	/// Sum over artene (tabell 12367) minus korrigerte brutto (tabell 12559), tusen kroner. 0 for alle regioner unntatt landet.
+	measure 'Kontroll art mot hovedtabell' =
+			VAR _Art = SUM ( fact_art[belop_1000kr] )
+			VAR _Hoved = CALCULATE ( SUM ( fact_eiendom[korr_brutto_1000kr] ), dim_funksjon[Er aggregat] = FALSE () )
+			RETURN
+			    _Art - _Hoved
+		formatString: #,0
+		displayFolder: Kontroll
+		lineageTag: feb2d123-560c-54bb-9965-a81ad6c08480
+
+	partition _Mål = m
+		mode: import
+		source =
+				let
+				    Kilde = #table(type table [Tom = text], {})
+				in
+				    Kilde

@@ -1,0 +1,22 @@
+/// Mappen der src/eksport.py legger dbt-martene. Full sti med skråstrek på slutten.
+expression MartMappe = "C:\prosjekt\mke-forvaltning\data\mart\" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 08656c40-61ed-54d0-902e-27c97a349a89
+
+	annotation PBI_ResultType = Text
+
+/// Leser en CSV fra MartMappe. Samme funksjon som i de andre prosjektene.
+expression fnLesCsv =
+		let
+		    fnLesCsv = (Filnavn as text) as table =>
+		        let
+		            Kilde = Csv.Document(
+		                File.Contents(MartMappe & Filnavn),
+		                [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]
+		            ),
+		            Overskrifter = Table.PromoteHeaders(Kilde, [PromoteAllScalars = true])
+		        in
+		            Overskrifter
+		in
+		    fnLesCsv
+	lineageTag: 4c6bdf1d-d421-596f-abd4-413633997877
+

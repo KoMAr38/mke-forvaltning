@@ -1,0 +1,26 @@
+/// Eiendomsforvaltningen i Moss målt mot KOSTRA-gruppe 11, Østfold og nabobyene, 2020-2025. SSB KOSTRA. Leser dbt-martene i MartMappe.
+model MKE_Eiendomsforvaltning
+	culture: nb-NO
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	discourageImplicitMeasures
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_QueryOrder = ["dim_region", "dim_aar", "dim_funksjon", "fact_eiendom", "fact_art", "fact_mke_aarsverk", "fact_fdv", "_Mål", "MartMappe", "fnLesCsv"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table dim_region
+ref table dim_aar
+ref table dim_funksjon
+ref table fact_eiendom
+ref table fact_art
+ref table fact_mke_aarsverk
+ref table fact_fdv
+ref table _Mål
+
+ref cultureInfo nb-NO

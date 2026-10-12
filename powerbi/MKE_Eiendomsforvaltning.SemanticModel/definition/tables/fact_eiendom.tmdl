@@ -1,0 +1,83 @@
+/// Hovedtall fra SSB tabell 12559 per region, år og funksjon. Netto, korrigert brutto og brutto ligger i hver sin kolonne. Østfold 2020-2023 er beregnet fra kommunene.
+table fact_eiendom
+	lineageTag: 709b3dc0-7c2c-5d03-8478-7877f76da0bb
+
+	column region_id
+		dataType: string
+		isHidden
+		lineageTag: 23878457-f699-5ea7-bf4a-a3a785ae0bfa
+		summarizeBy: none
+		sourceColumn: region_id
+
+	column aar
+		dataType: int64
+		isHidden
+		lineageTag: 9707992a-f5b1-5040-ac98-f5711f354a2f
+		summarizeBy: none
+		sourceColumn: aar
+
+	column funksjon_kode
+		dataType: string
+		isHidden
+		lineageTag: 6007318d-73bb-5c19-b1c8-150f11e98440
+		summarizeBy: none
+		sourceColumn: funksjon_kode
+
+	column netto_1000kr
+		dataType: double
+		isHidden
+		lineageTag: 6ace86e0-faec-5d19-8f40-f017c23ede59
+		summarizeBy: none
+		sourceColumn: netto_1000kr
+
+	column korr_brutto_1000kr
+		dataType: double
+		isHidden
+		lineageTag: 8266d4e2-2ac1-5a86-bab1-3adc92f00c71
+		summarizeBy: none
+		sourceColumn: korr_brutto_1000kr
+
+	column brutto_1000kr
+		dataType: double
+		isHidden
+		lineageTag: 46959ec6-a604-559a-b9c6-bb732c030da7
+		summarizeBy: none
+		sourceColumn: brutto_1000kr
+
+	column netto_per_innbygger
+		dataType: double
+		isHidden
+		lineageTag: 3bf5180d-93b7-5bd3-946d-f3e4ca81382d
+		summarizeBy: none
+		sourceColumn: netto_per_innbygger
+
+	column korr_brutto_per_kvm
+		dataType: double
+		isHidden
+		lineageTag: 86b1a3fe-36fe-5431-b34f-6380d3353bda
+		summarizeBy: none
+		sourceColumn: korr_brutto_per_kvm
+
+	column innbyggere
+		dataType: double
+		isHidden
+		lineageTag: 885edf25-fa17-5e04-8da4-d0c79248373a
+		summarizeBy: none
+		sourceColumn: innbyggere
+
+	/// SSB, eller beregnet fra de tolv kommunene (Østfold 2020-2023).
+	column Kilde
+		dataType: string
+		lineageTag: b82aa310-a53e-5669-81ad-a59d257b3ffe
+		summarizeBy: none
+		sourceColumn: kilde
+
+	partition fact_eiendom = m
+		mode: import
+		source =
+				let
+				    Kilde = fnLesCsv("fact_eiendom.csv"),
+				    Kolonner = Table.SelectColumns(Kilde, {"region_id", "aar", "funksjon_kode", "netto_1000kr", "korr_brutto_1000kr", "brutto_1000kr", "netto_per_innbygger", "korr_brutto_per_kvm", "innbyggere", "kilde"}),
+				    Typer = Table.TransformColumnTypes(Kolonner, {{"region_id", type text}, {"aar", Int64.Type}, {"funksjon_kode", type text}, {"netto_1000kr", type number}, {"korr_brutto_1000kr", type number}, {"brutto_1000kr", type number}, {"netto_per_innbygger", type number}, {"korr_brutto_per_kvm", type number}, {"innbyggere", type number}, {"kilde", type text}}, "en-US")
+				in
+				    Typer

@@ -1,0 +1,33 @@
+/// Årsverk i MKEiendom per 31.12, fra Moss kommunes årsrapporter 2024 og 2025. Ledige stillinger og lærlinger er ikke med.
+table fact_mke_aarsverk
+	lineageTag: 90c5a9fd-a9b5-5dd8-9013-63d3542c3a41
+
+	column aar
+		dataType: int64
+		isHidden
+		lineageTag: 7605cc5f-90c4-57fd-beb6-5ad045286d8f
+		summarizeBy: none
+		sourceColumn: aar
+
+	column aarsverk
+		dataType: double
+		isHidden
+		lineageTag: 2a7890bd-54e1-58db-8c1f-bb172f323fe0
+		summarizeBy: none
+		sourceColumn: aarsverk
+
+	column 'Kilde årsverk'
+		dataType: string
+		lineageTag: f5ca5c86-1483-5e10-9f9c-0cb01acb9c65
+		summarizeBy: none
+		sourceColumn: kilde
+
+	partition fact_mke_aarsverk = m
+		mode: import
+		source =
+				let
+				    Kilde = fnLesCsv("fact_mke_aarsverk.csv"),
+				    Kolonner = Table.SelectColumns(Kilde, {"aar", "aarsverk", "kilde"}),
+				    Typer = Table.TransformColumnTypes(Kolonner, {{"aar", Int64.Type}, {"aarsverk", type number}, {"kilde", type text}}, "en-US")
+				in
+				    Typer

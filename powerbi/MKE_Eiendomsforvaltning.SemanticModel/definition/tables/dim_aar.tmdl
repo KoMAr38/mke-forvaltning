@@ -1,0 +1,28 @@
+/// Regnskapsårene 2020-2025.
+table dim_aar
+	lineageTag: 7335b04f-b37a-5bed-9720-89189144000a
+
+	/// Regnskapsår.
+	column År
+		dataType: int64
+		formatString: 0
+		lineageTag: 4abbf1d2-7b99-532a-96ed-da38cff58dfb
+		summarizeBy: none
+		sourceColumn: aar
+
+	column 'Siste år'
+		dataType: boolean
+		isHidden
+		lineageTag: a2ee052e-49ec-5805-a0d7-0eab2b515d0c
+		summarizeBy: none
+		sourceColumn: er_siste_aar
+
+	partition dim_aar = m
+		mode: import
+		source =
+				let
+				    Kilde = fnLesCsv("dim_aar.csv"),
+				    Kolonner = Table.SelectColumns(Kilde, {"aar", "er_siste_aar"}),
+				    Typer = Table.TransformColumnTypes(Kolonner, {{"aar", Int64.Type}, {"er_siste_aar", type logical}}, "en-US")
+				in
+				    Typer

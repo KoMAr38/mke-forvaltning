@@ -1,0 +1,10 @@
+funksjon_kode,funksjon_navn,funksjon_kort,funksjon_gruppe,er_aggregat,sortering
+121,Forvaltningsutgifter i eiendomsforvaltningen,Forvaltning (121),Forvaltning,0,1
+130,Administrasjonslokaler,Administrasjon,Formålsbygg,0,2
+221,Barnehagelokaler og skyss,Barnehager,Formålsbygg,0,3
+222,Skolelokaler,Skoler,Formålsbygg,0,4
+261,Institusjonslokaler,Institusjoner,Formålsbygg,0,5
+381,Kommunale idrettsbygg og idrettsanlegg,Idrettsbygg,Formålsbygg,0,6
+386,Kommunale kulturbygg,Kulturbygg,Formålsbygg,0,7
+FGK6,"Formålsbygg, kommune",Formålsbygg i alt,Aggregat,1,8
+FGK6a,"Eiendomsforvaltning, kommune",Eiendomsforvaltning i alt,Aggregat,1,9

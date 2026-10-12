@@ -1,0 +1,39 @@
+relationship 5a80507f-a03e-59c9-98cc-1e83dcb1aa8d
+	fromColumn: fact_mke_aarsverk.aar
+	toColumn: dim_aar.År
+
+relationship 16903b7d-9e6a-5acf-9c15-16b4abd30eff
+	fromColumn: fact_eiendom.region_id
+	toColumn: dim_region.region_id
+
+relationship 2e9151b9-130a-5edd-ba21-6a4adc7e763c
+	fromColumn: fact_eiendom.aar
+	toColumn: dim_aar.År
+
+relationship 38ae0556-8945-5ac4-85b3-3043eaac182e
+	fromColumn: fact_eiendom.funksjon_kode
+	toColumn: dim_funksjon.funksjon_kode
+
+relationship ff125b0e-f6dd-5c10-9811-fd47afcf97ce
+	fromColumn: fact_art.region_id
+	toColumn: dim_region.region_id
+
+relationship 5e97ab48-593d-5047-bd29-2c49d340cbde
+	fromColumn: fact_art.aar
+	toColumn: dim_aar.År
+
+relationship 9c2123d2-f241-57bc-9bea-6ddf4e7e1c65
+	fromColumn: fact_art.funksjon_kode
+	toColumn: dim_funksjon.funksjon_kode
+
+relationship f8d7af70-9ebc-5227-8899-bc4239766e6d
+	fromColumn: fact_fdv.region_id
+	toColumn: dim_region.region_id
+
+relationship fddd8a6d-ea8d-541d-b2cf-424393a791c0
+	fromColumn: fact_fdv.aar
+	toColumn: dim_aar.År
+
+relationship b7d46367-657b-5bb3-8e47-4fedbd54c1e5
+	fromColumn: fact_fdv.funksjon_kode
+	toColumn: dim_funksjon.funksjon_kode
