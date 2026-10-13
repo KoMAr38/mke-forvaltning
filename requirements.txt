@@ -1,4 +1,4 @@
-dbt-core>=1.9
+dbt-core>=1.11
 dbt-duckdb>=1.9
 duckdb>=1.1
 # bare for 3_LAG_RAPPORT.bat (bakgrunnsbildene)

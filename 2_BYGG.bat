@@ -8,7 +8,7 @@ echo === 2/4 dbt run ===
 call dbt run --profiles-dir .
 if errorlevel 1 (echo FEIL i dbt run & pause & exit /b 1)
 echo.
-echo === 3/4 dbt test  (forventet: PASS=30 WARN=0 ERROR=0) ===
+echo === 3/4 dbt test  (forventet: PASS=30 eller 30 success i dbt v2) ===
 call dbt test --profiles-dir .
 echo.
 echo === 4/4 Eksport til data\mart ===

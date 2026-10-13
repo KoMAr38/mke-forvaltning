@@ -3,6 +3,8 @@
 ## Krav
 
 - Python 3.11 eller nyere, og `pip install -r requirements.txt`
+- dbt-core 1.11 eller nyere med dbt-duckdb (installeres med `requirements.txt`)
+  eller dbt v2 (`pip install dbt`). Begge er testet: dbt-core 1.12.5 og dbt 2.0.8.
 - Power BI Desktop fra 2026. Prosjektet er lagret som PBIP med TMDL og PBIR.
   I eldre versjoner må preview-innstillingene for PBIP, TMDL og PBIR være slått
   på under **File → Options and settings → Options → Preview features**.
@@ -20,6 +22,12 @@ Forventet sluttlinje fra `dbt test` i `2_BYGG.bat`:
 
 ```
 Done. PASS=30 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=30
+```
+
+Med dbt v2:
+
+```
+Summary: 30 total | 30 success
 ```
 
 `data/raw/ssb/` og `data/mart/` ligger i repoet, så rapporten kan åpnes uten

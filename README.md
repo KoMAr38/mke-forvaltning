@@ -241,7 +241,8 @@ eiendomsforvaltningen (FGK6a) 308 141 → 309 786. Personalkostnader på 121:
 Sarpsborg, Fredrikstad og Halden, eiendomsforvaltning per innbygger 2025:
 5 380,9 / 6 299,1 / 4 505,8.
 
-dbt: `PASS=30 WARN=0 ERROR=0` (30 tester). `assert_kontrolltall` feiler hvis
+dbt: `PASS=30 WARN=0 ERROR=0` (30 tester) med både dbt-core 1.12.5 og dbt
+2.0.8. `assert_kontrolltall` feiler hvis
 SSB endrer ett av de 18 tallene i tabellen over.
 
 ---

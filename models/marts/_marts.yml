@@ -16,8 +16,7 @@ models:
 
   - name: fact_eiendom
     data_tests:
-      - unique_combination:
-          columns: [region_id, aar, funksjon_kode]
+      - unique_combination: {arguments: {columns: [region_id, aar, funksjon_kode]}}
     columns:
       - name: region_id
         data_tests:
@@ -35,8 +34,7 @@ models:
 
   - name: fact_art
     data_tests:
-      - unique_combination:
-          columns: [region_id, aar, funksjon_kode, art_gruppe]
+      - unique_combination: {arguments: {columns: [region_id, aar, funksjon_kode, art_gruppe]}}
     columns:
       - name: region_id
         data_tests:
@@ -49,8 +47,7 @@ models:
 
   - name: fact_fdv
     data_tests:
-      - unique_combination:
-          columns: [region_id, aar, funksjon_kode]
+      - unique_combination: {arguments: {columns: [region_id, aar, funksjon_kode]}}
     columns:
       - name: region_id
         data_tests:
